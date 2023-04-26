@@ -12,7 +12,7 @@ const db = mysql.createConnection(
     {
       host: 'localhost',
       user: 'root',
-      password: 'Dungeon30!',
+      password: 'fV2_4*KKoeVfmemj@qcVZJtEb2AeCWpV',
       database: 'employees_db'
     }, (err) => {
         if(err){
@@ -185,6 +185,7 @@ const addRole = async () => {
 }
 
 const addEmployee = () => {
+
     inquirer.prompt([
         {
             type: 'input',
@@ -193,20 +194,8 @@ const addEmployee = () => {
         },
         {
             type: 'input',
-            message: "What is the new employee's first name?",
+            message: "What is the new employee's last name?",
             name: 'newLast'
-        },
-        {
-            type: 'list',
-            message: 'What is their role?',
-            name: 'newRole',
-            choices: []
-        },
-        {
-            type: 'list',
-            message: 'Who is their manager?',
-            name: 'newManager',
-            choices: []
         }
 
     ]).then((ans) => {
