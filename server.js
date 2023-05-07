@@ -184,25 +184,64 @@ const addRole = async () => {
         
 }
 
-const addEmployee = () => {
-
-    inquirer.prompt([
+const addEmployee = async () => {
+    try {
+      const newEmployee = await inquirer.prompt([
         {
-            type: 'input',
-            message: "What is the new employee's first name?",
-            name: 'newFirst'
+          type: 'input',
+          message: "What is the new employee's first name?",
+          name: 'newFirst',
         },
         {
-            type: 'input',
-            message: "What is the new employee's last name?",
-            name: 'newLast'
-        }
-
-    ]).then((ans) => {
-            console.log(ans);
-            mainMenu();
-        })
-}
+          type: 'input',
+          message: "What is the new employee's last name?",
+          name: 'newLast',
+        },
+      ]);
+  
+      const [rows] = await db.promise().query('SELECT * FROM role');
+      let roles = rows;
+      const roleChoices = roles.map(({ id, title }) => ({
+        id: id,
+        title: title,
+      }));
+  
+      const newRole = await inquirer.prompt([
+        {
+          type: 'list',
+          message: "What is the new employee's role?",
+          name: 'newRole',
+          choices: roleChoices,
+        },
+      ]);
+  
+      const [employeeRows] = await db.promise().query('SELECT * FROM employee');
+      let employees = employeeRows;
+      const employeeChoices = employees.map(({employees}) => ({
+        first_name: employees.first_name,
+        last_name: employees.last_name,
+      }));
+  
+      const newManager = await inquirer.prompt([
+        {
+          type: 'list',
+          message: "Who is the new employee's manager?",
+          name: 'newManager',
+          choices: employeeChoices,
+        },
+      ]);
+  
+      await db.promise().query(
+        `INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`,
+        [newEmployee.newFirst, newEmployee.newLast, newRole.newRole, newManager.newManager]
+      );
+      console.log(`${newEmployee.newFirst} ${newEmployee.newLast} added successfully!`);
+    } catch (error) {
+      console.log(error);
+    }
+    mainMenu();
+  };
+  
 
 const updateRole = () => {
 
